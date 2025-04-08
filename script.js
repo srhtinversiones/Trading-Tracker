@@ -1,4 +1,3 @@
-
 const form = document.getElementById('form');
 const tabla = document.querySelector('#tabla tbody');
 
@@ -31,6 +30,9 @@ form.addEventListener('submit', function(e) {
   tabla.appendChild(fila);
 
   form.reset();
+  // Reiniciar selects de TomSelect
+  document.querySelector('#par').tomselect.clear();
+  document.querySelector('#tipo').tomselect.clear();
 });
 
 function borrarTodo() {
@@ -44,6 +46,7 @@ function exportarExcel() {
 function exportarPDF() {
   alert("Funcionalidad de exportar a PDF pendiente");
 }
+
 const paresTrading = [
   "BTC/USDT", "ETH/USDT", "XRP/USDT", "DOGE/USDT", "SOL/USDT", "ADA/USDT", "DOT/USDT", "LTC/USDT", "LINK/USDT",
   "SHIB/USDT", "XMR/USDT", "TON/USDT", "AVAX/USDT", "XLM/USDT", "UNI/USDT", "BCH/USDT", "VET/USDT", "MATIC/USDT",
@@ -55,12 +58,12 @@ const paresTrading = [
   "CVC/USDT", "MTL/USDT", "NMR/USDT", "OCEAN/USDT", "UMA/USDT", "BAND/USDT", "RLC/USDT", "PAXG/USDT", "GNO/USDT",
   "REP/USDT", "MANA/USDT", "WAVES/USDT", "QTUM/USDT", "ONT/USDT", "DASH/USDT", "ZEC/USDT", "XEM/USDT", "ETC/USDT",
   "THETA/USDT", "KSM/USDT", "EGLD/USDT", "HNT/USDT", "AR/USDT", "ROSE/USDT", "CELO/USDT", "MINA/USDT", "KDA/USDT",
-  "FLUX/USDT", "GLMR/USDT", "ASTR/USDT", "ACA/USDT", "MOVR/USDT", "CSPR/USDT", "VLX/USDT", "SCRT/USDT", "ICX/USDT",
-  "IOST/USDT", "ELF/USDT", "STPT/USDT", "COTI/USDT", "DGB/USDT", "VTHO/USDT", "TFUEL/USDT"
+  "FLUX/USDT", "GLMR/USDT", "ASTR/USDT", "ACA/USDT", "MOVR/USDT", "CSPR/USDT", "VLX/USDT", "SCRT/USDT", "IOST/USDT",
+  "ELF/USDT", "STPT/USDT", "COTI/USDT", "DGB/USDT", "VTHO/USDT", "TFUEL/USDT"
 ];
 
+// Insertar pares en el select
 const parSelect = document.getElementById("par");
-
 paresTrading.forEach(par => {
   const option = document.createElement("option");
   option.value = par;
@@ -68,6 +71,7 @@ paresTrading.forEach(par => {
   parSelect.appendChild(option);
 });
 
+// Activar TomSelect en los dos selects
 new TomSelect("#par", {
   create: false,
   sortField: {
@@ -76,3 +80,9 @@ new TomSelect("#par", {
   },
   placeholder: "Buscar par de trading..."
 });
+
+new TomSelect("#tipo", {
+  create: false,
+  placeholder: "Selecciona tipo de operación..."
+});
+
