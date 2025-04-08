@@ -1,55 +1,51 @@
-const STORAGE_KEY = "trading_data";
-const form = document.getElementById("trade-form");
-const tableBody = document.querySelector("#data-table tbody");
+const form = document.getElementById('operationForm');
+const operationsTable = document.getElementById('operationsTable');
+const tbody = operationsTable.querySelector('tbody');
 
-function loadData() {
-  const data = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
-  tableBody.innerHTML = "";
-  data.forEach((op, index) => {
-    const row = document.createElement("tr");
-    row.innerHTML = `
-      <td>${op.fecha}</td>
-      <td>${op.pair}</td>
-      <td>${op.tipo}</td>
-      <td>${op.entrada}</td>
-      <td>${op.salida}</td>
-      <td>${op.comision}</td>
-      <td>${op.apalancamiento}</td>
-      <td>${op.resultado}</td>
-      <td><button onclick="deleteOp(${index})">🗑️</button></td>
-    `;
-    tableBody.appendChild(row);
-  });
+// Cargar operaciones guardadas
+window.onload = function () {
+  const savedData = localStorage.getItem('trading_operations');
+  if (savedData) {
+    tbody.innerHTML = savedData;
+  }
+};
+
+// Guardar automáticamente cada vez que se agrega una operación
+function saveOperations() {
+  localStorage.setItem('trading_operations', tbody.innerHTML);
 }
 
-function saveOp(op) {
-  const data = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
-  data.push(op);
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-  loadData();
-}
-
-function deleteOp(index) {
-  const data = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
-  data.splice(index, 1);
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-  loadData();
-}
-
-form.addEventListener("submit", function (e) {
+form.addEventListener('submit', function (e) {
   e.preventDefault();
-  const op = {
-    fecha: form.fecha.value,
-    pair: form.pair.value,
-    tipo: form.tipo.value,
-    entrada: form.entrada.value,
-    salida: form.salida.value,
-    comision: form.comision.value,
-    apalancamiento: form.apalancamiento.value,
-    resultado: form.resultado.value
-  };
-  saveOp(op);
+
+  const asset = document.getElementById('asset').value;
+  const entry = document.getElementById('entry').value;
+  const exit = document.getElementById('exit').value;
+  const leverage = document.getElementById('leverage').value;
+  const commission = document.getElementById('commission').value;
+
+  const result = ((exit - entry) * leverage - commission).toFixed(2);
+
+  const row = document.createElement('tr');
+  row.innerHTML = `
+    <td>${asset}</td>
+    <td>${entry}</td>
+    <td>${exit}</td>
+    <td>${leverage}</td>
+    <td>${commission}</td>
+    <td>${result}</td>
+  `;
+
+  tbody.appendChild(row);
+  saveOperations();
   form.reset();
 });
+// Botón para borrar todo
+const clearBtn = document.getElementById('clearBtn');
 
-loadData();
+clearBtn.addEventListener('click', function () {
+  if (confirm("¿Estás seguro de que querés borrar todas las operaciones?")) {
+    localStorage.removeItem('trading_operations');
+    tbody.innerHTML = '';
+  }
+});
