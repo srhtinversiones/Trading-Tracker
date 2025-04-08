@@ -1,68 +1,21 @@
-body {
-  background: linear-gradient(to bottom right, #0f1c1c, #0c1a2f);
-  font-family: Arial, sans-serif;
-  color: white;
-  margin: 0;
-  padding: 0;
-}
-
-header {
-  display: flex;
-  align-items: center;
-  padding: 10px 20px;
-}
-
-.logo {
-  width: 60px;
-  height: 60px;
-  border-radius: 50%;
-  object-fit: cover;
-}
+@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@700&display=swap');
 
 .titulo {
   margin-left: 20px;
-  font-size: 2rem;
+  font-size: 2.5rem;
+  font-family: 'Caveat', cursive;
   background: linear-gradient(to right, #00ffff, #ff00cc, #d49fff);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  font-family: 'Caveat', cursive;
+  display: inline-block;
+  animation: glow 2s infinite alternate;
 }
 
-main {
-  padding: 20px;
-}
-
-#tabla-operaciones {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 20px;
-}
-
-#tabla-operaciones th, #tabla-operaciones td {
-  border: 1px solid #555;
-  padding: 8px;
-  text-align: center;
-}
-
-.botones-tabla {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 15px;
-}
-
-.botones-izquierda button {
-  margin-right: 10px;
-}
-
-button {
-  padding: 8px 12px;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  cursor: pointer;
-  border-radius: 5px;
-}
-
-.btn-rojo {
-  background-color: #e74c3c;
+@keyframes glow {
+  from {
+    text-shadow: 0 0 10px #00ffff, 0 0 20px #ff00cc;
+  }
+  to {
+    text-shadow: 0 0 20px #d49fff, 0 0 30px #00ffff;
+  }
 }
