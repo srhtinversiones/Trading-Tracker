@@ -2,44 +2,41 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Robin Hood Traders Tracker</title>
-  <link rel="stylesheet" href="style.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Seguimiento de Trading</title>
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <header>
+  <div class="container">
     <h1>Robin Hood Traders Society</h1>
-  </header>
-  <main>
     <form id="trade-form">
-      <input type="date" placeholder="Fecha" required />
-      <input type="text" placeholder="Activo" required />
-      <select required>
-        <option value="">Tipo</option>
-        <option value="Compra">Compra</option>
-        <option value="Venta">Venta</option>
-      </select>
-      <input type="number" step="0.01" placeholder="Entrada" required />
-      <input type="number" step="0.01" placeholder="Salida" required />
-      <input type="number" step="0.01" placeholder="SL" />
-      <input type="number" step="0.01" placeholder="TP" />
-      <input type="number" step="0.01" placeholder="Apalancamiento" />
-      <input type="number" step="0.01" placeholder="Comisión" />
-      <input type="text" placeholder="Nota" />
-      <button type="submit">Agregar</button>
+      <input type="date" name="fecha" required />
+      <input type="text" name="pair" placeholder="Par (ej: BTC/USDT)" required />
+      <input type="text" name="tipo" placeholder="Tipo (Buy/Sell)" required />
+      <input type="number" name="entrada" placeholder="Entrada" step="0.01" required />
+      <input type="number" name="salida" placeholder="Salida" step="0.01" required />
+      <input type="number" name="comision" placeholder="Comisión (%)" step="0.01" required />
+      <input type="number" name="apalancamiento" placeholder="Apalancamiento (x)" step="0.1" required />
+      <input type="number" name="resultado" placeholder="Resultado ($)" step="0.01" required />
+      <button type="submit">Guardar operación</button>
     </form>
-    <section>
-      <h2>Historial de Operaciones</h2>
-      <table id="trade-table">
-        <thead>
-          <tr>
-            <th>Fecha</th><th>Activo</th><th>Tipo</th><th>Entrada</th><th>Salida</th><th>SL</th><th>TP</th><th>Apalancamiento</th><th>Comisión</th><th>Nota</th>
-          </tr>
-        </thead>
-        <tbody></tbody>
-      </table>
-    </section>
-  </main>
+    <table id="data-table">
+      <thead>
+        <tr>
+          <th>Fecha</th>
+          <th>Par</th>
+          <th>Tipo</th>
+          <th>Entrada</th>
+          <th>Salida</th>
+          <th>Comisión</th>
+          <th>Apalancamiento</th>
+          <th>Resultado</th>
+          <th>Acción</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
   <script src="script.js"></script>
 </body>
 </html>
