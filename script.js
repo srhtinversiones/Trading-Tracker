@@ -1,101 +1,78 @@
-document.addEventListener("DOMContentLoaded", function () {
-  const form = document.getElementById("trade-form");
-  const tableBody = document.querySelector("#data-table tbody");
-  const clearBtn = document.getElementById("clearBtn");
-  const exportBtn = document.getElementById("exportExcel");
 
-  // Cargar datos al inicio
-  loadData();
+let operaciones = JSON.parse(localStorage.getItem('operaciones')) || [];
 
-  // Guardar operación
-  form.addEventListener("submit", function (e) {
+const form = document.getElementById('trade-form');
+const tablaBody = document.querySelector('#tabla tbody');
+
+form.addEventListener('submit', e => {
     e.preventDefault();
-    const formData = new FormData(form);
-    const rowData = {};
-
-    formData.forEach((value, key) => {
-      rowData[key] = value;
-    });
-
-    addRow(rowData);
-    saveData();
+    const datos = {
+        fecha: document.getElementById('fecha').value,
+        par: document.getElementById('par').value,
+        tipo: document.getElementById('tipo').value,
+        entrada: document.getElementById('entrada').value,
+        salida: document.getElementById('salida').value,
+        comision: document.getElementById('comision').value,
+        apalancamiento: document.getElementById('apalancamiento').value,
+        resultado: document.getElementById('resultado').value
+    };
+    operaciones.push(datos);
+    localStorage.setItem('operaciones', JSON.stringify(operaciones));
     form.reset();
-  });
-
-  // Eliminar todos
-  clearBtn.addEventListener("click", function () {
-    if (confirm("¿Seguro que deseas borrar todas las operaciones?")) {
-      localStorage.removeItem("trades");
-      tableBody.innerHTML = "";
-    }
-  });
-
-  // Exportar a Excel
-  exportBtn.addEventListener("click", function () {
-    const rows = [["Fecha", "Par", "Tipo", "Entrada", "Salida", "Comisión", "Apalancamiento", "Resultado", "Notas"]];
-    document.querySelectorAll("#data-table tbody tr").forEach((tr) => {
-      const row = Array.from(tr.querySelectorAll("td")).slice(0, 9).map(td => td.textContent);
-      rows.push(row);
-    });
-
-    const wb = XLSX.utils.book_new();
-    const ws = XLSX.utils.aoa_to_sheet(rows);
-    XLSX.utils.book_append_sheet(wb, ws, "Operaciones");
-    XLSX.writeFile(wb, "operaciones_trading.xlsx");
-  });
-
-  // Función para agregar fila
-  function addRow(data) {
-    const tr = document.createElement("tr");
-
-    tr.innerHTML = `
-      <td>${data.fecha}</td>
-      <td>${data.pair}</td>
-      <td>${data.tipo}</td>
-      <td>${data.entrada}</td>
-      <td>${data.salida}</td>
-      <td>${data.comision}</td>
-      <td>${data.apalancamiento}</td>
-      <td>${data.resultado}</td>
-      <td>${data.notas || ""}</td>
-      <td><button class="deleteBtn">Eliminar</button></td>
-    `;
-
-    tableBody.appendChild(tr);
-    tr.querySelector(".deleteBtn").addEventListener("click", () => {
-      tr.remove();
-      saveData();
-    });
-  }
-
-  // Guardar en localStorage
-  function saveData() {
-    const data = [];
-    document.querySelectorAll("#data-table tbody tr").forEach((tr) => {
-      const cells = tr.querySelectorAll("td");
-      const row = {
-        fecha: cells[0].textContent,
-        pair: cells[1].textContent,
-        tipo: cells[2].textContent,
-        entrada: cells[3].textContent,
-        salida: cells[4].textContent,
-        comision: cells[5].textContent,
-        apalancamiento: cells[6].textContent,
-        resultado: cells[7].textContent,
-        notas: cells[8].textContent
-      };
-      data.push(row);
-    });
-
-    localStorage.setItem("trades", JSON.stringify(data));
-  }
-
-  // Cargar desde localStorage
-  function loadData() {
-    const stored = localStorage.getItem("trades");
-    if (stored) {
-      const data = JSON.parse(stored);
-      data.forEach(addRow);
-    }
-  }
+    renderTabla();
 });
+
+function renderTabla() {
+    tablaBody.innerHTML = "";
+    operaciones.forEach((op, i) => {
+        const fila = document.createElement('tr');
+        Object.values(op).forEach(valor => {
+            const td = document.createElement('td');
+            td.textContent = valor;
+            fila.appendChild(td);
+        });
+        const tdAccion = document.createElement('td');
+        const btn = document.createElement('button');
+        btn.textContent = "Eliminar";
+        btn.onclick = () => eliminar(i);
+        tdAccion.appendChild(btn);
+        fila.appendChild(tdAccion);
+        tablaBody.appendChild(fila);
+    });
+}
+
+function eliminar(index) {
+    operaciones.splice(index, 1);
+    localStorage.setItem('operaciones', JSON.stringify(operaciones));
+    renderTabla();
+}
+
+function borrarTodo() {
+    if (confirm("¿Estás seguro de borrar todos los datos?")) {
+        operaciones = [];
+        localStorage.removeItem('operaciones');
+        renderTabla();
+    }
+}
+
+function exportarExcel() {
+    const tabla = document.getElementById('tabla');
+    let csv = '';
+    for (let row of tabla.rows) {
+        let cols = Array.from(row.cells).map(cell => cell.innerText);
+        csv += cols.join(",") + "\n";
+    }
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'operaciones.csv';
+    a.click();
+    window.URL.revokeObjectURL(url);
+}
+
+function exportarPDF() {
+    window.print();
+}
+
+renderTabla();
