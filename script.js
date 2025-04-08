@@ -1,21 +1,46 @@
-document.getElementById("exportar-excel").addEventListener("click", () => {
-  const wb = XLSX.utils.book_new();
-  const ws = XLSX.utils.table_to_sheet(document.getElementById("tabla-operaciones"));
-  XLSX.utils.book_append_sheet(wb, ws, "Operaciones");
-  XLSX.writeFile(wb, "operaciones.xlsx");
-});
 
-document.getElementById("exportar-pdf").addEventListener("click", () => {
-  const { jsPDF } = window.jspdf;
-  const doc = new jsPDF();
-  doc.text("Operaciones", 10, 10);
-  doc.autoTable({ html: "#tabla-operaciones", startY: 20 });
-  doc.save("operaciones.pdf");
-});
+const form = document.getElementById('form');
+const tabla = document.querySelector('#tabla tbody');
 
-document.getElementById("borrar-todo").addEventListener("click", () => {
-  if (confirm("¿Estás seguro de borrar todos los datos?")) {
-    localStorage.clear();
-    document.querySelector("#tabla-operaciones tbody").innerHTML = "";
+form.addEventListener('submit', function(e) {
+  e.preventDefault();
+  const data = {
+    fecha: document.getElementById('fecha').value,
+    par: document.getElementById('par').value,
+    tipo: document.getElementById('tipo').value,
+    entrada: document.getElementById('entrada').value,
+    salida: document.getElementById('salida').value,
+    comision: document.getElementById('comision').value,
+    apalancamiento: document.getElementById('apalancamiento').value,
+    resultado: document.getElementById('resultado').value,
+  };
+
+  const fila = document.createElement('tr');
+  for (let key in data) {
+    const celda = document.createElement('td');
+    celda.textContent = data[key];
+    fila.appendChild(celda);
   }
+
+  const borrarBtn = document.createElement('button');
+  borrarBtn.textContent = 'Borrar';
+  borrarBtn.onclick = () => fila.remove();
+  const celdaAccion = document.createElement('td');
+  celdaAccion.appendChild(borrarBtn);
+  fila.appendChild(celdaAccion);
+  tabla.appendChild(fila);
+
+  form.reset();
 });
+
+function borrarTodo() {
+  tabla.innerHTML = '';
+}
+
+function exportarExcel() {
+  alert("Funcionalidad de exportar a Excel pendiente");
+}
+
+function exportarPDF() {
+  alert("Funcionalidad de exportar a PDF pendiente");
+}
