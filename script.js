@@ -35,7 +35,9 @@ new TomSelect("#par", {
   placeholder: "Buscar par de trading..."
 });
 
-];
+new TomSelect("#tipo", {
+  create: false,
+  placeholder: "Selecciona tipo de operación..."
 
 // Insertar dinámicamente los pares en el select
 const parSelect = document.getElementById("par");
@@ -80,6 +82,7 @@ form.addEventListener('submit', function (e) {
   };
 
   agregarFila(data);
+  console.log("Par seleccionado:", document.getElementById('par').value);
   guardarOperacion(data);
   form.reset();
   document.querySelector('#par').tomselect.clear();
