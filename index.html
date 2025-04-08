@@ -4,124 +4,123 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Seguimiento de Trading</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Pacifico&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css" />
   <style>
     body {
       margin: 0;
       font-family: 'Inter', sans-serif;
-      background: linear-gradient(to right, #f4f4f4, #e0eafc);
+      background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
       padding: 80px 20px 20px 20px;
-      color: #333;
+      color: #eee;
+    }
+
+    h1 {
+      font-family: 'Pacifico', cursive;
+      font-size: 2.5rem;
+      color: #ffffff;
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: auto;
+      background-color: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
     }
 
     table {
       width: 100%;
       border-collapse: collapse;
       margin-top: 20px;
-      background-color: white;
+      background-color: rgba(255, 255, 255, 0.03);
       border-radius: 12px;
       overflow: hidden;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
     }
 
     th, td {
       padding: 12px;
       text-align: left;
-      border-bottom: 1px solid #eee;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      color: #eee;
     }
 
     th {
-      background-color: #f0f0f0;
+      background-color: rgba(255, 255, 255, 0.08);
     }
 
     input, select {
       padding: 10px;
-      border: 1px solid #ccc;
+      border: 1px solid #888;
       border-radius: 8px;
       margin: 5px;
       width: 100%;
       max-width: 300px;
+      background-color: #1f2b38;
+      color: #fff;
     }
 
     button {
-      transition: 0.3s ease;
-      padding: 10px 16px;
+      background-color: #00b894;
+      color: white;
+      padding: 10px 15px;
       border: none;
-      border-radius: 8px;
-      margin-top: 10px;
+      border-radius: 10px;
       cursor: pointer;
+      transition: 0.3s ease;
     }
 
     button:hover {
       transform: scale(1.05);
-    }
-
-    #clearBtn {
-      background-color: crimson;
-      color: white;
-      margin-right: 10px;
-    }
-
-    #exportExcel {
-      background-color: green;
-      color: white;
-    }
-
-    .button-group {
-      margin-top: 20px;
+      background-color: #019875;
     }
   </style>
 </head>
 <body>
-
-<!-- Logo -->
-<div style="position: fixed; top: 15px; left: 15px; z-index: 1000;">
-  <img src="logo.png" alt="Logo Robin Hood" style="width: 60px; height: 60px; border-radius: 50%; box-shadow: 0 4px 10px rgba(0,0,0,0.2);">
-</div>
-
-<!-- Formulario y Tabla -->
-<div class="container">
-  <h1>Robin Hood Traders Society</h1>
-  <form id="trade-form">
-    <input type="date" name="fecha" required />
-    <input type="text" name="pair" placeholder="Par (ej: BTC/USDT)" required />
-    <input type="text" name="tipo" placeholder="Tipo (Buy/Sell)" required />
-    <input type="number" name="entrada" placeholder="Entrada" step="0.01" required />
-    <input type="number" name="salida" placeholder="Salida" step="0.01" required />
-    <input type="number" name="comision" placeholder="Comisión (%)" step="0.01" required />
-    <input type="number" name="apalancamiento" placeholder="Apalancamiento (x)" step="0.1" required />
-    <input type="number" name="resultado" placeholder="Resultado ($)" step="0.01" required />
-    <button type="submit">Guardar operación</button>
-  </form>
-
-  <!-- Tabla de datos -->
-  <table id="data-table">
-    <thead>
-      <tr>
-        <th>Fecha</th>
-        <th>Par</th>
-        <th>Tipo</th>
-        <th>Entrada</th>
-        <th>Salida</th>
-        <th>Comisión</th>
-        <th>Apalancamiento</th>
-        <th>Resultado</th>
-        <th>Acción</th>
-      </tr>
-    </thead>
-    <tbody></tbody>
-  </table>
-
-  <!-- Botones -->
-  <div class="button-group">
-    <button id="clearBtn">Borrar todo</button>
-    <button id="exportExcel">Exportar a Excel</button>
+  <!-- Logo en esquina superior izquierda -->
+  <div style="position: fixed; top: 15px; left: 15px; z-index: 1000;">
+    <img src="logo.png" alt="Logo RHT Inversiones" style="width: 60px; height: 60px; border-radius: 50%; box-shadow: 0 4px 10px rgba(0,0,0,0.3); object-fit: cover;">
   </div>
-</div>
 
-<!-- Scripts -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-<script src="script.js"></script>
+  <div class="container">
+    <h1>Robin Hood Traders Society</h1>
+    <form id="trade-form">
+      <input type="date" name="fecha" required />
+      <input type="text" name="pair" placeholder="Par (ej: BTC/USDT)" required />
+      <input type="text" name="tipo" placeholder="Tipo (Buy/Sell)" required />
+      <input type="number" name="entrada" placeholder="Entrada" step="0.01" required />
+      <input type="number" name="salida" placeholder="Salida" step="0.01" required />
+      <input type="number" name="comision" placeholder="Comisión (%)" step="0.01" required />
+      <input type="number" name="apalancamiento" placeholder="Apalancamiento (x)" step="0.1" required />
+      <input type="number" name="resultado" placeholder="Resultado ($)" step="0.01" required />
+      <button type="submit">Guardar operación</button>
+    </form>
+    <table id="data-table">
+      <thead>
+        <tr>
+          <th>Fecha</th>
+          <th>Par</th>
+          <th>Tipo</th>
+          <th>Entrada</th>
+          <th>Salida</th>
+          <th>Comisión</th>
+          <th>Apalancamiento</th>
+          <th>Resultado</th>
+          <th>Acción</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+    <button id="clearBtn" style="margin-top: 10px; background-color: crimson; color: white; padding: 8px 12px; border: none; border-radius: 8px; cursor: pointer;">Borrar todo</button>
+    <button id="exportExcel" style="margin-top: 10px; background-color: green; color: white; padding: 8px 12px; border: none; border-radius: 8px; cursor: pointer;">Exportar a Excel</button>
+  </div>
+  <!-- Librería SheetJS para exportar a Excel -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>
