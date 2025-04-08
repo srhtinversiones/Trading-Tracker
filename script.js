@@ -1,90 +1,101 @@
-const form = document.getElementById("trade-form");
-const tableBody = document.querySelector("#data-table tbody");
-const clearBtn = document.getElementById("clearBtn");
-const exportBtn = document.getElementById("exportExcel");
+document.addEventListener("DOMContentLoaded", function () {
+  const form = document.getElementById("trade-form");
+  const tableBody = document.querySelector("#data-table tbody");
+  const clearBtn = document.getElementById("clearBtn");
+  const exportBtn = document.getElementById("exportExcel");
 
-// Cargar datos almacenados
-document.addEventListener("DOMContentLoaded", () => {
-  const storedData = JSON.parse(localStorage.getItem("trades")) || [];
-  storedData.forEach(addRow);
-});
+  // Cargar datos al inicio
+  loadData();
 
-// Guardar operación
-form.addEventListener("submit", (e) => {
-  e.preventDefault();
-  const data = Object.fromEntries(new FormData(form));
-  addRow(data);
-  saveToStorage();
-  form.reset();
-});
+  // Guardar operación
+  form.addEventListener("submit", function (e) {
+    e.preventDefault();
+    const formData = new FormData(form);
+    const rowData = {};
 
-// Agregar fila
-function addRow(data) {
-  const row = document.createElement("tr");
+    formData.forEach((value, key) => {
+      rowData[key] = value;
+    });
 
-  for (let key of ["fecha", "pair", "tipo", "entrada", "salida", "comision", "apalancamiento", "resultado"]) {
-    const cell = document.createElement("td");
-    cell.textContent = data[key];
-    row.appendChild(cell);
-  }
-
-  const deleteBtn = document.createElement("button");
-  deleteBtn.textContent = "Eliminar";
-  deleteBtn.style.background = "tomato";
-  deleteBtn.style.color = "#fff";
-  deleteBtn.style.border = "none";
-  deleteBtn.style.borderRadius = "6px";
-  deleteBtn.style.padding = "4px 8px";
-  deleteBtn.style.cursor = "pointer";
-  deleteBtn.onclick = () => {
-    row.remove();
-    saveToStorage();
-  };
-
-  const actionCell = document.createElement("td");
-  actionCell.appendChild(deleteBtn);
-  row.appendChild(actionCell);
-
-  tableBody.appendChild(row);
-}
-
-// Guardar en LocalStorage
-function saveToStorage() {
-  const rows = tableBody.querySelectorAll("tr");
-  const data = Array.from(rows).map(row => {
-    const cells = row.querySelectorAll("td");
-    return {
-      fecha: cells[0].textContent,
-      pair: cells[1].textContent,
-      tipo: cells[2].textContent,
-      entrada: cells[3].textContent,
-      salida: cells[4].textContent,
-      comision: cells[5].textContent,
-      apalancamiento: cells[6].textContent,
-      resultado: cells[7].textContent,
-    };
+    addRow(rowData);
+    saveData();
+    form.reset();
   });
-  localStorage.setItem("trades", JSON.stringify(data));
-}
 
-// Borrar todo
-clearBtn.addEventListener("click", () => {
-  if (confirm("¿Estás seguro de que deseas borrar todas las operaciones?")) {
-    tableBody.innerHTML = "";
-    localStorage.removeItem("trades");
+  // Eliminar todos
+  clearBtn.addEventListener("click", function () {
+    if (confirm("¿Seguro que deseas borrar todas las operaciones?")) {
+      localStorage.removeItem("trades");
+      tableBody.innerHTML = "";
+    }
+  });
+
+  // Exportar a Excel
+  exportBtn.addEventListener("click", function () {
+    const rows = [["Fecha", "Par", "Tipo", "Entrada", "Salida", "Comisión", "Apalancamiento", "Resultado", "Notas"]];
+    document.querySelectorAll("#data-table tbody tr").forEach((tr) => {
+      const row = Array.from(tr.querySelectorAll("td")).slice(0, 9).map(td => td.textContent);
+      rows.push(row);
+    });
+
+    const wb = XLSX.utils.book_new();
+    const ws = XLSX.utils.aoa_to_sheet(rows);
+    XLSX.utils.book_append_sheet(wb, ws, "Operaciones");
+    XLSX.writeFile(wb, "operaciones_trading.xlsx");
+  });
+
+  // Función para agregar fila
+  function addRow(data) {
+    const tr = document.createElement("tr");
+
+    tr.innerHTML = `
+      <td>${data.fecha}</td>
+      <td>${data.pair}</td>
+      <td>${data.tipo}</td>
+      <td>${data.entrada}</td>
+      <td>${data.salida}</td>
+      <td>${data.comision}</td>
+      <td>${data.apalancamiento}</td>
+      <td>${data.resultado}</td>
+      <td>${data.notas || ""}</td>
+      <td><button class="deleteBtn">Eliminar</button></td>
+    `;
+
+    tableBody.appendChild(tr);
+    tr.querySelector(".deleteBtn").addEventListener("click", () => {
+      tr.remove();
+      saveData();
+    });
   }
-});
 
-// Exportar a Excel
-exportBtn.addEventListener("click", () => {
-  const wb = XLSX.utils.book_new();
-  const ws_data = [
-    ["Fecha", "Par", "Tipo", "Entrada", "Salida", "Comisión", "Apalancamiento", "Resultado"],
-    ...Array.from(tableBody.querySelectorAll("tr")).map(row =>
-      Array.from(row.querySelectorAll("td")).slice(0, 8).map(td => td.textContent)
-    )
-  ];
-  const ws = XLSX.utils.aoa_to_sheet(ws_data);
-  XLSX.utils.book_append_sheet(wb, ws, "Operaciones");
-  XLSX.writeFile(wb, "operaciones_trading.xlsx");
+  // Guardar en localStorage
+  function saveData() {
+    const data = [];
+    document.querySelectorAll("#data-table tbody tr").forEach((tr) => {
+      const cells = tr.querySelectorAll("td");
+      const row = {
+        fecha: cells[0].textContent,
+        pair: cells[1].textContent,
+        tipo: cells[2].textContent,
+        entrada: cells[3].textContent,
+        salida: cells[4].textContent,
+        comision: cells[5].textContent,
+        apalancamiento: cells[6].textContent,
+        resultado: cells[7].textContent,
+        notas: cells[8].textContent
+      };
+      data.push(row);
+    });
+
+    localStorage.setItem("trades", JSON.stringify(data));
+  }
+
+  // Cargar desde localStorage
+  function loadData() {
+    const stored = localStorage.getItem("trades");
+    if (stored) {
+      const data = JSON.parse(stored);
+      data.forEach(addRow);
+    }
+  }
 });
