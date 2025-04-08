@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Robin Hood Traders Society</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.5/xlsx.full.min.js"></script>
+</head>
+<body>
+  <header>
+    <img src="logo.png" alt="Logo RHT Inversiones" class="logo" />
+    <h1 class="titulo">Robin Hood Traders Society</h1>
+  </header>
+
+  <main>
+    <form id="operacion-form">
+      <!-- tus campos existentes -->
+    </form>
+
+    <table id="tabla-operaciones">
+      <thead>
+        <tr>
+          <th>Fecha</th>
+          <th>Par</th>
+          <th>Tipo</th>
+          <th>Entrada</th>
+          <th>Salida</th>
+          <th>Comisión</th>
+          <th>Apalancamiento</th>
+          <th>Resultado</th>
+          <th>Acción</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+
+    <div class="botones-tabla">
+      <div class="botones-izquierda">
+        <button id="exportar-excel">Exportar a Excel</button>
+        <button id="exportar-pdf">Exportar a PDF</button>
+      </div>
+      <button id="borrar-todo" class="btn-rojo">Borrar todo</button>
+    </div>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
