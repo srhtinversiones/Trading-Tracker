@@ -49,3 +49,9 @@ clearBtn.addEventListener('click', function () {
     tbody.innerHTML = '';
   }
 });
+// Exportar a Excel
+document.getElementById('exportExcel').addEventListener('click', function () {
+  const table = document.getElementById('operationsTable');
+  const workbook = XLSX.utils.table_to_book(table, { sheet: "Operaciones" });
+  XLSX.writeFile(workbook, 'operaciones_trading.xlsx');
+});
