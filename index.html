@@ -2,49 +2,54 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Robin Hood Traders Society</title>
-    <link rel="stylesheet" href="style.css" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Robin Hood Traders Society</title>
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-    <div class="container">
-        <img src="logo.png" alt="Logo RHT Inversiones" class="logo" />
-        <h1>Robin Hood Traders Society</h1>
-        <form id="trade-form">
-            <input type="date" id="fecha" placeholder="Fecha" required />
-            <input type="text" id="par" placeholder="Par (ej: BTC/USDT)" required />
-            <select id="tipo">
-                <option value="">Tipo (Buy/Sell)</option>
-                <option value="Buy">Buy</option>
-                <option value="Sell">Sell</option>
-            </select>
-            <input type="number" step="0.01" id="entrada" placeholder="Entrada" required />
-            <input type="number" step="0.01" id="salida" placeholder="Salida" required />
-            <input type="number" step="0.01" id="comision" placeholder="Comisión (%)" />
-            <input type="number" step="0.01" id="apalancamiento" placeholder="Apalancamiento (x)" />
-            <input type="number" step="0.01" id="resultado" placeholder="Resultado ($)" />
-            <button type="submit">Guardar operación</button>
-        </form>
-        <table id="tabla">
-            <thead>
-                <tr>
-                    <th>Fecha</th><th>Par</th><th>Tipo</th><th>Entrada</th><th>Salida</th>
-                    <th>Comisión</th><th>Apalancamiento</th><th>Resultado</th><th>Acción</th>
-                </tr>
-            </thead>
-            <tbody></tbody>
-        </table>
-        <div class="acciones">
-            <div class="izquierda">
-                <button onclick="exportarExcel()">Exportar a Excel</button>
-                <button onclick="exportarPDF()">Exportar a PDF</button>
-            </div>
-            <div class="derecha">
-                <button onclick="borrarTodo()" class="danger">Borrar todo</button>
-            </div>
-        </div>
+  <img src="assets/logo.png" alt="Logo RHT Inversiones" class="logo" />
+  <div class="container">
+    <h1>Robin Hood Traders Society</h1>
+    <form id="form">
+      <input type="date" id="fecha" required />
+      <input type="text" id="par" placeholder="Par (ej: BTC/USDT)" required />
+      <select id="tipo" required>
+        <option value="">Tipo (Buy/Sell)</option>
+        <option value="Buy">Buy</option>
+        <option value="Sell">Sell</option>
+      </select>
+      <input type="number" id="entrada" placeholder="Entrada" required />
+      <input type="number" id="salida" placeholder="Salida" required />
+      <input type="number" id="comision" placeholder="Comisión (%)" required />
+      <input type="number" id="apalancamiento" placeholder="Apalancamiento (x)" required />
+      <input type="number" id="resultado" placeholder="Resultado ($)" required />
+      <button type="submit">Guardar operación</button>
+    </form>
+    <table id="tabla">
+      <thead>
+        <tr>
+          <th>Fecha</th>
+          <th>Par</th>
+          <th>Tipo</th>
+          <th>Entrada</th>
+          <th>Salida</th>
+          <th>Comisión</th>
+          <th>Apalancamiento</th>
+          <th>Resultado</th>
+          <th>Acción</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+    <div class="buttons">
+      <button onclick="borrarTodo()" class="borrar">Borrar todo</button>
+      <div class="exportar">
+        <button onclick="exportarExcel()">Exportar a Excel</button>
+        <button onclick="exportarPDF()">Exportar a PDF</button>
+      </div>
     </div>
-    <script src="script.js"></script>
+  </div>
+  <script src="script.js"></script>
 </body>
 </html>
