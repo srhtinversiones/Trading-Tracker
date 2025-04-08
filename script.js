@@ -1,57 +1,67 @@
-const form = document.getElementById('operationForm');
-const operationsTable = document.getElementById('operationsTable');
-const tbody = operationsTable.querySelector('tbody');
+const form = document.getElementById("trade-form");
+const table = document.getElementById("data-table").getElementsByTagName("tbody")[0];
+const exportBtn = document.getElementById("exportExcel");
+const clearBtn = document.getElementById("clearBtn");
 
-// Cargar operaciones guardadas
-window.onload = function () {
-  const savedData = localStorage.getItem('trading_operations');
-  if (savedData) {
-    tbody.innerHTML = savedData;
-  }
-};
+// Cargar datos guardados
+document.addEventListener("DOMContentLoaded", () => {
+  const savedData = JSON.parse(localStorage.getItem("trades")) || [];
+  savedData.forEach((row) => addRowToTable(row));
+});
 
-// Guardar automáticamente cada vez que se agrega una operación
-function saveOperations() {
-  localStorage.setItem('trading_operations', tbody.innerHTML);
-}
-
-form.addEventListener('submit', function (e) {
+form.addEventListener("submit", function (e) {
   e.preventDefault();
-
-  const asset = document.getElementById('asset').value;
-  const entry = document.getElementById('entry').value;
-  const exit = document.getElementById('exit').value;
-  const leverage = document.getElementById('leverage').value;
-  const commission = document.getElementById('commission').value;
-
-  const result = ((exit - entry) * leverage - commission).toFixed(2);
-
-  const row = document.createElement('tr');
-  row.innerHTML = `
-    <td>${asset}</td>
-    <td>${entry}</td>
-    <td>${exit}</td>
-    <td>${leverage}</td>
-    <td>${commission}</td>
-    <td>${result}</td>
-  `;
-
-  tbody.appendChild(row);
-  saveOperations();
+  const data = Object.fromEntries(new FormData(form).entries());
+  addRowToTable(data);
+  saveData();
   form.reset();
 });
-// Botón para borrar todo
-const clearBtn = document.getElementById('clearBtn');
 
-clearBtn.addEventListener('click', function () {
-  if (confirm("¿Estás seguro de que querés borrar todas las operaciones?")) {
-    localStorage.removeItem('trading_operations');
-    tbody.innerHTML = '';
-  }
+function addRowToTable(data) {
+  const row = table.insertRow();
+  Object.values(data).forEach((value) => {
+    const cell = row.insertCell();
+    cell.textContent = value;
+  });
+
+  const deleteCell = row.insertCell();
+  const deleteBtn = document.createElement("button");
+  deleteBtn.textContent = "Eliminar";
+  deleteBtn.style.cssText = "background-color: tomato; color: white; border: none; padding: 4px 8px; border-radius: 6px; cursor: pointer;";
+  deleteBtn.onclick = () => {
+    row.remove();
+    saveData();
+  };
+  deleteCell.appendChild(deleteBtn);
+}
+
+function saveData() {
+  const rows = Array.from(table.rows).map((row) => {
+    return Array.from(row.cells).slice(0, -1).reduce((acc, cell, index) => {
+      const keys = ["fecha", "pair", "tipo", "entrada", "salida", "comision", "apalancamiento", "resultado"];
+      acc[keys[index]] = cell.textContent;
+      return acc;
+    }, {});
+  });
+  localStorage.setItem("trades", JSON.stringify(rows));
+}
+
+exportBtn.addEventListener("click", () => {
+  const wb = XLSX.utils.book_new();
+  const ws_data = [
+    ["Fecha", "Par", "Tipo", "Entrada", "Salida", "Comisión", "Apalancamiento", "Resultado"],
+    ...Array.from(table.rows).map((row) =>
+      Array.from(row.cells).slice(0, -1).map((cell) => cell.textContent)
+    ),
+  ];
+  const ws = XLSX.utils.aoa_to_sheet(ws_data);
+  XLSX.utils.book_append_sheet(wb, ws, "Operaciones");
+  XLSX.writeFile(wb, "operaciones_trading.xlsx");
 });
-// Exportar a Excel
-document.getElementById('exportExcel').addEventListener('click', function () {
-  const table = document.getElementById('operationsTable');
-  const workbook = XLSX.utils.table_to_book(table, { sheet: "Operaciones" });
-  XLSX.writeFile(workbook, 'operaciones_trading.xlsx');
+
+clearBtn.addEventListener("click", () => {
+  if (confirm("¿Estás seguro de que deseas borrar todas las operaciones?")) {
+    table.innerHTML = "";
+    localStorage.removeItem("trades");
+  }
 });
