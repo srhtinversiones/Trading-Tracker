@@ -1,8 +1,10 @@
 const form = document.getElementById('form');
 const tabla = document.querySelector('#tabla tbody');
 
+// Guardar nueva operación
 form.addEventListener('submit', function(e) {
   e.preventDefault();
+
   const data = {
     fecha: document.getElementById('fecha').value,
     par: document.getElementById('par').value,
@@ -13,6 +15,12 @@ form.addEventListener('submit', function(e) {
     apalancamiento: document.getElementById('apalancamiento').value,
     resultado: document.getElementById('resultado').value,
   };
+
+  agregarFila(data);
+  guardarOperacion(data); // 👈 Guarda en localStorage
+  form.reset();
+});
+
 
   const fila = document.createElement('tr');
   for (let key in data) {
@@ -35,16 +43,47 @@ form.addEventListener('submit', function(e) {
   document.querySelector('#tipo').tomselect.clear();
 });
 
-function borrarTodo() {
-  tabla.innerHTML = '';
+function agregarFila(data) {
+  const fila = document.createElement('tr');
+  for (let key in data) {
+    const celda = document.createElement('td');
+    celda.textContent = data[key];
+    fila.appendChild(celda);
+  }
+
+  const borrarBtn = document.createElement('button');
+  borrarBtn.textContent = 'Borrar';
+  borrarBtn.onclick = () => {
+    fila.remove();
+    eliminarOperacion(data);
+  };
+  const celdaAccion = document.createElement('td');
+  celdaAccion.appendChild(borrarBtn);
+  fila.appendChild(celdaAccion);
+  tabla.appendChild(fila);
 }
 
-function exportarExcel() {
-  alert("Funcionalidad de exportar a Excel pendiente");
+function guardarOperacion(data) {
+  const operaciones = JSON.parse(localStorage.getItem('operaciones')) || [];
+  operaciones.push(data);
+  localStorage.setItem('operaciones', JSON.stringify(operaciones));
 }
 
-function exportarPDF() {
-  alert("Funcionalidad de exportar a PDF pendiente");
+function eliminarOperacion(data) {
+  let operaciones = JSON.parse(localStorage.getItem('operaciones')) || [];
+  operaciones = operaciones.filter(op =>
+    !(op.fecha === data.fecha &&
+      op.par === data.par &&
+      op.tipo === data.tipo &&
+      op.entrada === data.entrada &&
+      op.salida === data.salida)
+  );
+  localStorage.setItem('operaciones', JSON.stringify(operaciones));
+}
+
+function cargarOperacionesGuardadas() {
+  const operaciones = JSON.parse(localStorage.getItem('operaciones')) || [];
+  operaciones.forEach(operacion => agregarFila(operacion));
 }
 
 const paresTrading = [
@@ -84,5 +123,8 @@ new TomSelect("#par", {
 new TomSelect("#tipo", {
   create: false,
   placeholder: "Selecciona tipo de operación..."
+
+cargarOperacionesGuardadas();
+
 });
 
